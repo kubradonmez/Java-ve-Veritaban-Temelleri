@@ -1,26 +1,41 @@
-import com.kubra.config.DataBaseConfig;
 import com.kubra.config.DataBaseConnectorConfig;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.Statement;
 
 public class Main {
     public static void main(String[] args) {
+        // Önce bağlantıyı başlat
+        DataBaseConnectorConfig.setConnection();
 
-        String sql="CREATE TABLE IF NOT EXISTS users ("+
-                "id SERIAL PRIMARY KEY,"+
-                "name VARCHAR(100),"+
+        String createTableSQL = "CREATE TABLE IF NOT EXISTS users (" +
+                "id SERIAL PRIMARY KEY, " +
+                "name VARCHAR(100), " +
                 "email VARCHAR(100))";
-        try{
-            Connection connection= DriverManager.getConnection(DataBaseConfig.DATABASE_URL,
-                    DataBaseConfig.DATABASE_USERNAME, DataBaseConfig.DATABASE_PASSWORD);
-            Statement statement=connection.createStatement();
-            statement.execute(sql);
-            System.out.println("Table Created");
-        }catch(Exception e){
-            e.printStackTrace();
-        }
 
+        String insertSql = "INSERT INTO users (name, email) VALUES (?, ?)";
+
+        try {
+            Connection connection = DataBaseConnectorConfig.getConnection();
+
+            // Tablo oluşturma
+            Statement statement = connection.createStatement();
+            statement.execute(createTableSQL);
+            System.out.println("Tablo oluşturuldu");
+
+            // Veri ekleme
+            PreparedStatement preparedStatement = connection.prepareStatement(insertSql);
+            preparedStatement.setString(1, "Ali");
+            preparedStatement.setString(2, "ali@mail.com");
+            preparedStatement.executeUpdate();
+            System.out.println("Veri eklendi");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // Bağlantıyı kapat
+            DataBaseConnectorConfig.closeConnection();
+        }
     }
 }
