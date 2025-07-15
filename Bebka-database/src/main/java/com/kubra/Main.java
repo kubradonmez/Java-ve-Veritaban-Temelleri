@@ -2,6 +2,7 @@ import com.kubra.config.DataBaseConnectorConfig;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Statement;
 
 public class Main {
@@ -31,6 +32,16 @@ public class Main {
             preparedStatement.executeUpdate();
             System.out.println("Veri eklendi");
 
+            //Veri listeleme
+            String selectSql = "SELECT * FROM users where email = ?";
+            PreparedStatement prepared = connection.prepareStatement(selectSql);
+            prepared.setString(1, "ali@mail.com");
+            ResultSet resultSet = prepared.executeQuery();
+            while (resultSet.next()) {
+                System.out.println(resultSet.getInt("id"));
+                System.out.println(resultSet.getString("name"));
+                System.out.println(resultSet.getString("email"));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
