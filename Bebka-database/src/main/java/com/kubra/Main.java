@@ -1,13 +1,16 @@
 import com.kubra.config.DataBaseConnectorConfig;
+import com.kubra.dao.UserDaoImpl;
+import com.kubra.user.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        // Önce bağlantıyı başlat
+       /* // Önce bağlantıyı başlat
         DataBaseConnectorConfig.setConnection();
 
         String createTableSQL = "CREATE TABLE IF NOT EXISTS users (" +
@@ -61,6 +64,32 @@ public class Main {
         } finally {
             // Bağlantıyı kapat
             DataBaseConnectorConfig.closeConnection();
+        }*/
+        try{
+            DataBaseConnectorConfig.setConnection();
+            Connection connection=DataBaseConnectorConfig.getConnection();
+            UserDaoImpl userDao=new UserDaoImpl(connection);
+            //userDao.createtable();
+            //User user=new User(0, "Kübra", "kubra@mail.com");
+           // User user=new User(0, "Seda", "seda@mail.com");
+           // userDao.save(user);
+            /*List<User> users = userDao.findAll();
+            System.out.println("Kullanıcılar:");
+            for (User u : users) {
+                System.out.println(u.getId() + " - " + u.getName() + " - " + u.getEmail());
+            }*/
+           /* User updateUser = new User(1, "Ayşe", "ayse@example.com");
+            userDao.update(updateUser);
+
+            // Güncellemeden sonra tekrar listele
+            System.out.println("Güncellemeden sonra:");
+            List <User> users = userDao.findAll();
+            for (User u : users) {
+                System.out.println(u.getId() + " - " + u.getName() + " - " + u.getEmail());
+            }*/
+            userDao.delete(1);
+        } catch(Exception e){
+            e.printStackTrace();
         }
     }
 }
